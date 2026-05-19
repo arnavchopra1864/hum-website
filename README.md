@@ -203,6 +203,7 @@ _Add dated entries below whenever behavior, env vars, or maintainer workflows ch
 
 | Date | Change |
 |------|--------|
+| 2026-05-19 | Favicon: `Layout.astro` uses `/favicon.ico` only (removed missing `favicon.svg` link). `_redirects`: `/current-season/` → `/meet-the-team` (301) so trailing-slash URLs redirect cleanly on Netlify. |
 | 2026-05-18 | Netlify deploy: [`netlify.toml`](netlify.toml), [`public/_redirects`](public/_redirects) for `/current-season` → `/meet-the-team`. |
 | 2026-05-18 | Env audit: production-ready `.env.example`, removed unused **`PUBLIC_ALUMNI_GROUP_CHAT_URL`**, YouTube defaults in `src/constants/youtube.ts`. |
 | 2026-05-18 | Removed **`PUBLIC_SPONSOR_FORM_URL`**; sponsorship on `/support` is email-only via `PUBLIC_SUPPORT_EMAIL`. |
