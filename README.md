@@ -8,19 +8,6 @@ Make sure to keep updating this README as you make changes.
 
 ---
 
-## Handoff assessment (how hard is changing certain things?)
-
-| Area | Non-technical ease | Notes |
-|------|-------------------|--------|
-| **Donation links, forms, email, social URLs** | **Good**. | Netlify uses “environment variables” which allow you to change links from the dashboard. Paste URLs and redeploy. No code.
-| **Alumni & team profiles** | **Good**. Requires familiarity with **Markdown** and **copy-paste frontmatter** | Make sure the `---` block at the top and bottom of each file is present. Other than that, normal writing.  Must follow the [alumni profile](#alumni-profiles) rules. A template file is provided. |
-| **Alumni & team photos** | **Moderate** | Whenever someone uploads an image to Google Drive: Resize with [Canva Image Resizer](https://www.canva.com/features/image-resizer/) to **800×800** px (or any square dimension). Save under `public/images/alumni/profiles/` or `public/images/team/profiles/`. Make sure the filename **case** matches in the markdown file. Max **1 MB** per file (There's a script to check: `npm run build`). See [Headshot uploads](#headshot-uploads-recommended-workflow-any-platform). |
-| **Home page copy (“What we do”, hero, etc.)** | **Moderate** | Text lives directly in `.astro` files under `src/components/home/`. Editing is fine, but you'll have to dive directly into the codebase. Quotes, commas, and indentation matter. |
-| **Adding new pages or layout/navigation changes** | **Developer** | Requires Astro and routing knowledge. Rely on AI here if no coding knowledge. |
-| **Instagram grid widget** | **Good** (URL swap) | Change `PUBLIC_INSTAGRAM_FEED_EMBED_URL` to the new embed URL from your provider (e.g. Fouita `https://emb.fouita.com/widget/...`). This is one example of environment variables coming in handy. |
-
----
-
 ## What you need on your computer
 
 - **Node.js** version **22.12 or newer** (see `package.json` → `engines`).
@@ -86,6 +73,19 @@ src/
   styles/global.css     Global Tailwind theme
 .env.example            List of all env vars (copy to .local .env)
 ```
+
+---
+
+## Handoff assessment (how hard is changing certain things?)
+
+| Area | Non-technical ease | Notes |
+|------|-------------------|--------|
+| **Donation links, forms, email, social URLs** | **Good**. | Netlify uses “environment variables” which allow you to change links from the dashboard. Paste URLs and redeploy. No code.
+| **Alumni & team profiles** | **Good**. Requires familiarity with **Markdown** and **copy-paste frontmatter** | Make sure the `---` block at the top and bottom of each file is present. Other than that, normal writing.  Must follow the [alumni profile](#alumni-profiles) rules. A template file is provided. |
+| **Alumni & team photos** | **Moderate** | Whenever someone uploads an image to Google Drive: Resize with [Canva Image Resizer](https://www.canva.com/features/image-resizer/) to **800×800** px (or any square dimension). Save under `public/images/alumni/profiles/` or `public/images/team/profiles/`. Make sure the filename **case** matches in the markdown file. Max **1 MB** per file (There's a script to check: `npm run build`). See [Headshot uploads](#headshot-uploads-recommended-workflow-any-platform). |
+| **Home page copy (“What we do”, hero, etc.)** | **Moderate** | Text lives directly in `.astro` files under `src/components/home/`. Editing is fine, but you'll have to dive directly into the codebase. Quotes, commas, and indentation matter. |
+| **Adding new pages or layout/navigation changes** | **Developer** | Requires Astro and routing knowledge. Rely on AI here if no coding knowledge. |
+| **Instagram grid widget** | **Good** (URL swap) | Change `PUBLIC_INSTAGRAM_FEED_EMBED_URL` to the new embed URL from your provider (e.g. Fouita `https://emb.fouita.com/widget/...`). This is one example of environment variables coming in handy. |
 
 ---
 
