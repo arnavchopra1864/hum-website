@@ -1,0 +1,106 @@
+---
+import Layout from '../layouts/Layout.astro';
+import DonationMethodCard from '../components/support/DonationMethodCard.astro';
+import { DEFAULT_HUM_EMAIL } from '../constants/email';
+import { DEFAULT_PERFORMANCE_REQUEST_FORM_URL } from '../constants/performance';
+
+const venmoUrl =
+	(typeof import.meta.env.PUBLIC_DONATE_VENMO_URL === 'string' && import.meta.env.PUBLIC_DONATE_VENMO_URL.trim()) ||
+	'';
+const gofundmeUrl =
+	(typeof import.meta.env.PUBLIC_DONATE_GOFUNDME_URL === 'string' &&
+		import.meta.env.PUBLIC_DONATE_GOFUNDME_URL.trim()) ||
+	'';
+const paypalUrl =
+	(typeof import.meta.env.PUBLIC_DONATE_PAYPAL_URL === 'string' && import.meta.env.PUBLIC_DONATE_PAYPAL_URL.trim()) ||
+	'';
+const supportEmail =
+	(typeof import.meta.env.PUBLIC_SUPPORT_EMAIL === 'string' && import.meta.env.PUBLIC_SUPPORT_EMAIL.trim()) ||
+	DEFAULT_HUM_EMAIL;
+const performanceRequestFormUrl =
+	(typeof import.meta.env.PUBLIC_PERFORMANCE_REQUEST_FORM_URL === 'string' &&
+		import.meta.env.PUBLIC_PERFORMANCE_REQUEST_FORM_URL.trim()) ||
+	DEFAULT_PERFORMANCE_REQUEST_FORM_URL;
+---
+
+<Layout title="Hum A Cappella | Support" description="Support Hum through Venmo, GoFundMe, sponsorship, and performance requests.">
+	<section class="border-b border-black/10 bg-gradient-to-b from-hum-green/15 via-hum-white to-hum-white" aria-labelledby="support-hero-heading">
+		<div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+			<p class="text-sm font-semibold uppercase tracking-widest text-hum-green">Support Hum</p>
+			<h1 id="support-hero-heading" class="mt-3 font-heading text-4xl font-bold tracking-tight text-hum-black sm:text-5xl">
+				Help power every set, trip, and story.
+			</h1>
+			<p class="mt-5 max-w-3xl text-lg leading-relaxed text-black/80">
+				Hum is student-run and student-funded. Every performance, competition, and creative project is made possible by the support of alumni, sponsors, and community members.
+			</p>
+			<a
+				href={performanceRequestFormUrl}
+				target="_blank"
+				rel="noopener noreferrer"
+				class="mt-8 inline-flex min-h-[48px] items-center justify-center rounded-md bg-hum-green px-6 py-3 text-sm font-semibold text-hum-black shadow-sm transition-colors hover:bg-hum-green-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hum-green"
+			>
+				Book a performance
+			</a>
+		</div>
+	</section>
+
+	<section id="donate" class="border-b border-black/10 py-16 sm:py-20" aria-labelledby="donate-heading">
+		<div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+			<div class="flex flex-col gap-3">
+				<h2 id="donate-heading" class="font-heading text-3xl font-bold text-hum-black">Donate</h2>
+				<p class="max-w-2xl text-sm leading-relaxed text-black/75">
+					Choose the method that is easiest for you.
+				</p>
+			</div>
+
+			<ul class="mt-10 grid list-none gap-6 md:grid-cols-3">
+				<li>
+					<DonationMethodCard
+						title="Venmo"
+						description="Our preferred method. Quick and accessible."
+						url={venmoUrl}
+						buttonLabel="Donate via Venmo"
+						comingSoonLabel="Add PUBLIC_DONATE_VENMO_URL"
+					/>
+				</li>
+				<li>
+					<DonationMethodCard
+						title="GoFundMe"
+						description="More formal, more focused."
+						url={gofundmeUrl}
+						buttonLabel="Donate via GoFundMe"
+						comingSoonLabel="Add PUBLIC_DONATE_GOFUNDME_URL"
+					/>
+				</li>
+				<li>
+					<DonationMethodCard
+						title="PayPal"
+						description="PayPal coming soon!"
+						url={paypalUrl}
+						buttonLabel="Donate via PayPal"
+						comingSoonLabel="Under construction"
+					/>
+				</li>
+			</ul>
+		</div>
+	</section>
+
+	<section id="sponsor" class="py-16 sm:py-20" aria-labelledby="sponsor-heading">
+		<div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+			<h2 id="sponsor-heading" class="font-heading text-3xl font-bold text-hum-black">Sponsor Hum</h2>
+			<p class="mt-3 max-w-3xl text-sm leading-relaxed text-black/75">
+				Sponsor partnerships help us compete, produce, and grow. If your organization would like to partner with Hum,
+				email us — we&apos;ll follow up to discuss opportunities.
+			</p>
+
+			<div class="mt-8">
+				<a
+					href={`mailto:${supportEmail}`}
+					class="inline-flex min-h-[48px] items-center justify-center rounded-md bg-hum-black px-6 py-3 text-sm font-semibold text-hum-white transition-colors hover:bg-black/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hum-green"
+				>
+					Email us about sponsorship
+				</a>
+			</div>
+		</div>
+	</section>
+</Layout>

@@ -1,0 +1,28 @@
+---
+import { DEFAULT_HOME_HYPE_VIDEO_YOUTUBE_ID } from '../../constants/youtube';
+
+/**
+ * Full-width featured performance reel. Override with `PUBLIC_HOME_HYPE_VIDEO_YOUTUBE_ID` (YouTube video ID only).
+ */
+const envId = import.meta.env.PUBLIC_HOME_HYPE_VIDEO_YOUTUBE_ID as string | undefined;
+const youtubeIdTrimmed =
+	(typeof envId === 'string' && envId.trim()) || DEFAULT_HOME_HYPE_VIDEO_YOUTUBE_ID;
+const embedUrl = `https://www.youtube.com/embed/${youtubeIdTrimmed}?rel=0&modestbranding=1&autoplay=1&mute=1&playsinline=1`;
+---
+
+<section class="border-b border-black/10 bg-hum-black" aria-labelledby="featured-video-heading">
+	<h2 id="featured-video-heading" class="sr-only">Featured performance video</h2>
+	<div class="relative w-full">
+		<div class="aspect-video w-full max-h-[85vh] max-w-[100vw] sm:max-h-[80vh]">
+			<iframe
+				class="h-full w-full"
+				src={embedUrl}
+				title="Hum performance montage"
+				loading="lazy"
+				allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+				referrerpolicy="strict-origin-when-cross-origin"
+				allowfullscreen
+			/>
+		</div>
+	</div>
+</section>

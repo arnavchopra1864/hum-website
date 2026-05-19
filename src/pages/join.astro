@@ -1,0 +1,91 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import { DEFAULT_JOIN_INTEREST_FORM_URL } from '../constants/recruiting';
+import { DEFAULT_INSTAGRAM_URL } from '../constants/social';
+import {
+	JOIN_AUDITION_HEADING,
+	JOIN_AUDITION_STEPS,
+	JOIN_ELIGIBILITY_HEADING,
+	JOIN_ELIGIBILITY_LEAD,
+	JOIN_HERO_H1,
+	JOIN_HERO_LEAD,
+	JOIN_META_DESCRIPTION,
+	JOIN_RECRUITING_HEADING,
+	JOIN_RECRUITING_LEAD,
+} from '../constants/join-page';
+
+const joinInterestFormUrl =
+	(typeof import.meta.env.PUBLIC_JOIN_INTEREST_FORM_URL === 'string' &&
+		import.meta.env.PUBLIC_JOIN_INTEREST_FORM_URL.trim()) ||
+	DEFAULT_JOIN_INTEREST_FORM_URL;
+
+const instagramUrl =
+	(typeof import.meta.env.PUBLIC_INSTAGRAM_URL === 'string' && import.meta.env.PUBLIC_INSTAGRAM_URL.trim()) ||
+	DEFAULT_INSTAGRAM_URL;
+---
+
+<Layout title="Hum A Cappella | Join Us" description={JOIN_META_DESCRIPTION}>
+	<PageHero id="join-heading" titleLead={JOIN_HERO_H1} intro={JOIN_HERO_LEAD} variant="action">
+		<a
+			href={joinInterestFormUrl}
+			target="_blank"
+			rel="noopener noreferrer"
+			class="inline-flex min-h-[48px] items-center justify-center rounded-md bg-hum-black px-8 py-3 text-center text-sm font-semibold text-hum-white transition-colors hover:bg-black/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hum-green sm:min-w-[12rem]"
+		>
+			Interest form
+		</a>
+		<a
+			href={instagramUrl}
+			target="_blank"
+			rel="noopener noreferrer"
+			class="inline-flex min-h-[48px] items-center justify-center rounded-md border-2 border-hum-black bg-transparent px-8 py-3 text-center text-sm font-semibold text-hum-black transition-colors hover:bg-hum-black hover:text-hum-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hum-green sm:min-w-[12rem]"
+		>
+			Follow @humacappella
+		</a>
+	</PageHero>
+
+	<section class="border-b border-black/10 py-12 sm:py-16" aria-labelledby="join-eligibility-heading">
+		<div class="mx-auto grid max-w-6xl gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:px-8">
+			<div>
+				<h2 id="join-eligibility-heading" class="font-heading text-2xl font-bold text-hum-black sm:text-3xl">
+					{JOIN_ELIGIBILITY_HEADING}
+				</h2>
+				<p class="mt-4 text-base leading-relaxed text-black/80">
+					{JOIN_ELIGIBILITY_LEAD}
+				</p>
+			</div>
+			<div>
+				<h2 id="join-recruiting-heading" class="font-heading text-2xl font-bold text-hum-black sm:text-3xl">
+					{JOIN_RECRUITING_HEADING}
+				</h2>
+				<p class="mt-4 text-base leading-relaxed text-black/80">
+					{JOIN_RECRUITING_LEAD}
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<section class="py-12 sm:py-16" aria-labelledby="join-audition-heading">
+		<div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+			<h2 id="join-audition-heading" class="font-heading text-2xl font-bold text-hum-black sm:text-3xl">
+				{JOIN_AUDITION_HEADING}
+			</h2>
+			<ol class="mt-6 list-decimal space-y-3 pl-6 text-base leading-relaxed text-black/80 marker:font-semibold marker:text-hum-black">
+				{JOIN_AUDITION_STEPS.map((step) => (
+					<li>{step}</li>
+				))}
+			</ol>
+			<div class="mt-8">
+				<a
+					href={joinInterestFormUrl}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="inline-flex min-h-[48px] items-center justify-center rounded-md bg-hum-green px-6 py-3 text-sm font-semibold text-hum-black shadow-sm transition-colors hover:bg-hum-green-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hum-green"
+				>
+					Interest form
+				</a>
+			</div>
+		</div>
+	</section>
+</Layout>

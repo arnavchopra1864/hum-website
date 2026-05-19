@@ -1,0 +1,67 @@
+---
+/**
+ * Flagship performances on YouTube. Set `PUBLIC_YOUTUBE_FEATURED_IDS` to a comma-separated
+ * list of YouTube video IDs (e.g. `dQw4w9WgXcQ,abc123`).
+ */
+const rawIds = (import.meta.env.PUBLIC_YOUTUBE_FEATURED_IDS as string | undefined)?.trim();
+const ids = rawIds
+	? rawIds
+			.split(',')
+			.map((s) => s.trim())
+			.filter(Boolean)
+	: [];
+
+type Props = {
+	channelUrl: string;
+};
+
+const { channelUrl } = Astro.props;
+---
+
+<section class="border-b border-black/10 py-16 sm:py-24" aria-labelledby="watch-us-heading">
+	<div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+		<div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+			<div>
+				<h2 id="watch-us-heading" class="font-heading text-3xl font-bold text-hum-black sm:text-4xl">
+					Watch us
+				</h2>
+				<p class="mt-2 max-w-2xl text-sm text-black/70">
+					Flagship sets and competition moments.</p>
+			</div>
+			<a
+				href={channelUrl}
+				target="_blank"
+				rel="noopener noreferrer"
+				class="shrink-0 text-sm font-semibold text-hum-green underline underline-offset-4 hover:text-hum-green-dark"
+			>
+				Full YouTube channel →
+			</a>
+		</div>
+
+		{
+			ids.length === 0 ? (
+				<div class="mt-10 rounded-xl border border-dashed border-black/20 bg-black/[0.02] px-6 py-16 text-center text-sm text-black/60">
+					Embedded players will appear here once <code class="font-mono text-xs">PUBLIC_YOUTUBE_FEATURED_IDS</code> is set (up
+					to three IDs recommended).
+				</div>
+			) : (
+				<ul class="mt-10 grid list-none gap-8 lg:grid-cols-3">
+					{ids.slice(0, 3).map((id) => (
+						<li class="overflow-hidden rounded-xl border border-black/10 bg-black shadow-md">
+							<div class="aspect-video w-full">
+								<iframe
+									class="h-full w-full"
+									src={`https://www.youtube.com/embed/${id}?rel=0&modestbranding=1`}
+									title="Hum on YouTube"
+									allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+									referrerpolicy="strict-origin-when-cross-origin"
+									allowfullscreen
+								/>
+							</div>
+						</li>
+					))}
+				</ul>
+			)
+		}
+	</div>
+</section>

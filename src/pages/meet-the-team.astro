@@ -1,0 +1,44 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import TeamMemberCard from '../components/team/TeamMemberCard.astro';
+import { compareTeamByVoiceThenName } from '../utils/teamRosterSort';
+
+const allTeam = await getCollection('team');
+const visible = allTeam.filter((e) => !e.data.draft).sort(compareTeamByVoiceThenName);
+
+const HERO_H1 = 'Meet the Humily';
+const HERO_INTRO =
+	'Meet the current iteration of Hum - the voices carrying the legacy forward.';
+---
+
+<Layout
+	title="Hum A Cappella | Meet the Team"
+	description="Meet the current Hum A Cappella roster — UT Austin’s South Asian fusion a cappella team."
+>
+	<PageHero id="meet-the-team-heading" titleLead={HERO_H1} intro={HERO_INTRO} />
+
+	<section class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8" aria-labelledby="roster-heading">
+		<h2 id="roster-heading" class="font-heading text-2xl font-bold text-hum-black sm:text-3xl">
+			Roster
+		</h2>
+
+		{
+			visible.length === 0 ? (
+				<p class="mt-10 rounded-lg border border-dashed border-black/20 bg-black/[0.02] px-6 py-12 text-center text-black/70">
+					Roster coming soon. Add markdown files under <code class="rounded bg-black/5 px-1.5 py-0.5 font-mono text-xs">src/content/team/</code> with{' '}
+					<code class="rounded bg-black/5 px-1.5 py-0.5 font-mono text-xs">draft: false</code> to publish members.
+				</p>
+			) : (
+				<ul class="mt-10 grid list-none gap-6 sm:grid-cols-2 lg:grid-cols-3">
+					{visible.map((entry) => (
+						<li>
+							<TeamMemberCard entry={entry} />
+						</li>
+					))}
+				</ul>
+			)
+		}
+	</section>
+</Layout>

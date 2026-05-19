@@ -1,0 +1,78 @@
+---
+import {
+	REUNION_SITE_BAND_ENABLED,
+	REUNION_SITE_BAND_MESSAGE,
+	REUNION_SITE_BAND_CTA_LABEL,
+	REUNION_ANCHOR_ID,
+} from '../constants/reunion';
+
+const detailsHref = `/alumni#${REUNION_ANCHOR_ID}`;
+const marqueeId = 'reunion-band-live-label';
+---
+
+{
+	REUNION_SITE_BAND_ENABLED ? (
+		<div
+			class="border-b-2 border-hum-green-dark/35 bg-gradient-to-r from-hum-green/35 via-hum-green/25 to-hum-green/35 shadow-[inset_0_1px_0_rgb(255_255_255/0.35)]"
+			role="region"
+			aria-labelledby={marqueeId}
+		>
+			<p id={marqueeId} class="sr-only">
+				Announcement: {REUNION_SITE_BAND_MESSAGE}. Use the reunion details link next for more information.
+			</p>
+			<div class="mx-auto flex max-w-6xl flex-col items-stretch gap-3 px-4 py-3 sm:flex-row sm:items-center sm:gap-5 sm:px-6 lg:gap-8">
+				<div class="min-h-[1.5rem] min-w-0 flex-1 overflow-hidden py-0.5" aria-hidden="true">
+					<div class="flex w-max reunion-band-marquee reunion-band-marquee--running">
+						<span class="inline-flex shrink-0 items-center gap-10 whitespace-nowrap pr-16 sm:gap-14 sm:pr-20">
+							<span class="text-sm font-bold tracking-tight text-hum-black sm:text-base">{REUNION_SITE_BAND_MESSAGE}</span>
+							<span class="text-lg font-semibold leading-none text-hum-green-dark" aria-hidden="true">
+								★
+							</span>
+						</span>
+						<span class="reunion-band-marquee-seg-dupe inline-flex shrink-0 items-center gap-10 whitespace-nowrap pr-16 sm:gap-14 sm:pr-20">
+							<span class="text-sm font-bold tracking-tight text-hum-black sm:text-base">{REUNION_SITE_BAND_MESSAGE}</span>
+							<span class="text-lg font-semibold leading-none text-hum-green-dark" aria-hidden="true">
+								★
+							</span>
+						</span>
+					</div>
+				</div>
+				<a
+					href={detailsHref}
+					class="inline-flex shrink-0 items-center justify-center self-center rounded-md border-2 border-hum-black bg-hum-white px-4 py-2 text-center text-sm font-bold shadow-sm transition-colors hover:bg-hum-black hover:text-hum-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hum-green sm:self-auto"
+				>
+					{REUNION_SITE_BAND_CTA_LABEL}
+				</a>
+			</div>
+		</div>
+	) : null
+}
+
+<style>
+	@keyframes reunion-band-marquee-x {
+		from {
+			transform: translateX(0);
+		}
+		to {
+			transform: translateX(-50%);
+		}
+	}
+	.reunion-band-marquee--running {
+		animation: reunion-band-marquee-x 34s linear infinite;
+		will-change: transform;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.reunion-band-marquee--running {
+			animation: none;
+			justify-content: center;
+			flex-wrap: wrap;
+			width: 100% !important;
+			max-width: 100%;
+			transform: none;
+			row-gap: 0.35rem;
+		}
+		.reunion-band-marquee-seg-dupe {
+			display: none;
+		}
+	}
+</style>

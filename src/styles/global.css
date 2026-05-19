@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+@theme {
+	--font-heading: "Fraunces", ui-serif, Georgia, "Times New Roman", serif;
+	--font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+	--color-hum-black: #0a0a0a;
+	--color-hum-white: #fafafa;
+	--color-hum-green: #89bb8b;
+	--color-hum-green-dark: #659d69;
+}

@@ -1,0 +1,48 @@
+---
+/** Long-form copy for the alumni page — split out so edits stay localized as the site grows. */
+import { DEFAULT_HUM_EMAIL } from '../../constants/email';
+import { DEFAULT_INSTAGRAM_URL } from '../../constants/social';
+
+const envIg = (typeof import.meta.env.PUBLIC_INSTAGRAM_URL === 'string' && import.meta.env.PUBLIC_INSTAGRAM_URL.trim()) || '';
+const instagramUrl = envIg || DEFAULT_INSTAGRAM_URL;
+const envEmail =
+	(typeof import.meta.env.PUBLIC_SUPPORT_EMAIL === 'string' && import.meta.env.PUBLIC_SUPPORT_EMAIL.trim()) || '';
+const humEmail = envEmail || DEFAULT_HUM_EMAIL;
+---
+
+<section class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8" aria-labelledby="alumni-interaction-heading">
+	<h2 id="alumni-interaction-heading" class="font-heading text-3xl font-bold text-hum-black">
+		Stay connected
+	</h2>
+	<div class="mt-8 grid gap-10 md:grid-cols-3">
+		<div>
+			<h3 class="text-sm font-bold uppercase tracking-wide text-hum-green">Meets &amp; reunions</h3>
+			<p class="mt-2 text-sm leading-relaxed text-black/80">
+				Follow{' '}
+				<a
+					href={instagramUrl}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="font-semibold underline underline-offset-2 hover:text-hum-green"
+				>Instagram</a>
+				for upcoming reunions and hangs. Want
+				to host one in your area?{' '}
+				<a href={`mailto:${humEmail}`} class="font-semibold underline underline-offset-2 hover:text-hum-green">Email us</a>.
+			</p>
+		</div>
+		<div>
+			<h3 class="text-sm font-bold uppercase tracking-wide text-hum-green">Support</h3>
+			<p class="mt-2 text-sm leading-relaxed text-black/80">
+				Donations and sponsors keep Hum on the road and on stage - see{' '}
+				<a href="/support" class="font-semibold underline underline-offset-2 hover:text-hum-green">Support</a>.
+			</p>
+		</div>
+		<div>
+			<h3 class="text-sm font-bold uppercase tracking-wide text-hum-green">Directory &amp; chat</h3>
+			<p class="mt-2 text-sm leading-relaxed text-black/80">
+				<strong>Add yourself</strong> to the alumni directory. We publish entries after a quick review. 
+				We're also kicking off an alumni WhatsApp, join through the same form.
+			</p>
+		</div>
+	</div>
+</section>

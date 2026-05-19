@@ -1,0 +1,131 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import HomeWhatWeDo from '../components/home/HomeWhatWeDo.astro';
+import PageHero from '../components/PageHero.astro';
+import { DEFAULT_PERFORMANCE_REQUEST_FORM_URL } from '../constants/performance';
+
+const about = await getEntry('pages', 'about');
+if (!about) {
+	throw new Error('Missing content entry: src/content/pages/about.md');
+}
+
+const performanceRequestFormUrl =
+	(typeof import.meta.env.PUBLIC_PERFORMANCE_REQUEST_FORM_URL === 'string' &&
+		import.meta.env.PUBLIC_PERFORMANCE_REQUEST_FORM_URL.trim()) ||
+	DEFAULT_PERFORMANCE_REQUEST_FORM_URL;
+
+const { title, whoWeAre, timeline, showRequestPerformanceCta } = about.data;
+---
+
+<Layout title={`Hum A Cappella | ${title}`} description="Learn about Hum A Cappella — our story, our sound, and the community behind the music.">
+	<PageHero id="about-heading" titleLead={title} intro={whoWeAre} variant="action">
+		{showRequestPerformanceCta ? (
+			<a
+				href={performanceRequestFormUrl}
+				target="_blank"
+				rel="noopener noreferrer"
+				class="inline-flex min-h-[48px] items-center justify-center rounded-md bg-hum-black px-6 py-3 text-center text-sm font-semibold text-hum-white transition-colors hover:bg-black/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hum-green"
+			>
+				Book a performance
+			</a>
+		) : null}
+		<a
+			href="/music"
+			class="inline-flex min-h-[48px] items-center justify-center rounded-md bg-hum-green px-6 py-3 text-center text-sm font-semibold text-hum-black shadow-sm transition-colors hover:bg-hum-green-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hum-green"
+		>
+			Listen &amp; watch
+		</a>
+	</PageHero>
+
+	<HomeWhatWeDo />
+
+	<section class="border-b border-black/10 py-16 sm:py-20" aria-labelledby="awards-heading">
+		<div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+			<div class="max-w-3xl">
+				<h2 id="awards-heading" class="font-heading text-3xl font-bold text-hum-black sm:text-4xl">
+					Awards, accomplishments &amp; press
+				</h2>
+				<p class="mt-3 text-sm text-black/70">
+					Scroll through moments that shaped our sound, our story, and our community.
+				</p>
+			</div>
+
+			{timeline.length > 0 ? (
+				<div class="relative mt-10">
+					<div class="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-hum-white to-transparent" />
+					<div class="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-hum-white to-transparent" />
+					<div
+						id="about-timeline-scroll"
+						class="snap-x snap-mandatory overflow-x-auto pb-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+					>
+						<div class="min-w-max px-2">
+							<div class="relative pb-2">
+								<div class="pointer-events-none absolute left-0 right-0 top-[18px] h-1 rounded-full bg-hum-green" />
+								<ul class="relative flex list-none items-start gap-8 pr-10 pt-3">
+									{timeline.map((item) => (
+										<li class="w-[min(22rem,80vw)] snap-start">
+											<div class="group pl-6">
+												{/* Dot sits on the main line */}
+												<div class="relative z-10 h-4 w-4 -translate-x-1/2 rounded-full bg-hum-green shadow-sm transition-transform group-hover:scale-110 group-focus-within:scale-110" />
+
+												{/* Vertical connector from dot to card */}
+												<div class="pointer-events-none ml-[-1px] mt-2 h-10 w-px bg-hum-green/40" />
+
+												<div class="mt-2">
+													<div class="rounded-xl border border-black/10 bg-white p-6 shadow-sm transition-transform hover:-translate-y-0.5 hover:shadow-md focus-within:-translate-y-0.5 focus-within:shadow-md">
+														<div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+															<p class="text-xs font-semibold uppercase tracking-widest text-black/60">
+																{item.dateLabel}
+															</p>
+															{/* tag chips: delete this `item.tag` block to revert */}
+															{item.tag ? (
+																<span class="rounded-full bg-hum-green/15 px-2 py-0.5 text-[11px] font-semibold capitalize tracking-wide text-hum-black">
+																	{item.tag}
+																</span>
+															) : null}
+														</div>
+														<h3 class="mt-2 font-heading text-lg font-bold text-hum-black">{item.title}</h3>
+														<p class="mt-3 text-sm leading-relaxed text-black/75">{item.body}</p>
+														{item.href ? (
+															<a
+																href={item.href}
+																target="_blank"
+																rel="noopener noreferrer"
+																class="mt-4 inline-flex text-sm font-semibold text-hum-green underline underline-offset-4 hover:text-hum-green-dark"
+															>
+																{item.hrefLabel || 'Learn more →'}
+															</a>
+														) : null}
+													</div>
+												</div>
+											</div>
+										</li>
+									))}
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			) : (
+				<p class="mt-10 rounded-lg border border-dashed border-black/20 bg-black/[0.02] px-6 py-10 text-center text-sm text-black/70">
+					Timeline entries coming soon.
+				</p>
+			)}
+		</div>
+	</section>
+</Layout>
+
+<script>
+	// Start the timeline at the most recent (rightmost) position.
+	// We do this client-side since scroll position isn't representable in static HTML.
+	const el = document.getElementById('about-timeline-scroll');
+	if (el) {
+		const setToEnd = () => {
+			el.scrollLeft = el.scrollWidth;
+		};
+		// 2 frames ensures layout + fonts settle before measuring scrollWidth.
+		requestAnimationFrame(() => requestAnimationFrame(setToEnd));
+	}
+</script>
+

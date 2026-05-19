@@ -1,0 +1,248 @@
+---
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+import { DEFAULT_HUM_EMAIL } from '../constants/email';
+import { DEFAULT_INSTAGRAM_URL } from '../constants/social';
+import { DEFAULT_YOUTUBE_CHANNEL_URL } from '../constants/youtube';
+
+/**
+ * Default header logo under `public/images/` (must match the filename in `builtInLogoFsPath` below).
+ * For the 25th-anniversary asset instead: use `/images/hum-logo-25.png` and `hum-logo-25.png` here, or set `PUBLIC_SITE_LOGO_URL` in `.env`.
+ */
+const DEFAULT_LOGO_PUBLIC_PATH = '/images/hum-logo.png';
+
+interface Props {
+	title?: string;
+	description?: string;
+	donateUrl?: string;
+	instagramUrl?: string;
+	youtubeUrl?: string;
+	/** Override logo URL (otherwise `PUBLIC_SITE_LOGO_URL` or the default file under `public/images/`). */
+	siteLogoUrl?: string;
+}
+
+type NavItem = { label: string; href: string };
+
+const navItems: NavItem[] = [
+	{ label: 'Home', href: '/' },
+	{ label: 'About', href: '/about' },
+	{ label: 'Meet the Team', href: '/meet-the-team' },
+	{ label: 'Join Us', href: '/join' },
+	{ label: 'Alumni', href: '/alumni' },
+	{ label: 'Music', href: '/music' },
+	{ label: 'Support', href: '/support' },
+];
+
+const {
+	title = 'Hum A Cappella',
+	description = "UT Austin's premier South Asian fusion a cappella team — blending cultures, voices, and stories for 25 years.",
+	donateUrl = '/support#donate',
+	instagramUrl: instagramUrlProp,
+	youtubeUrl: youtubeUrlProp,
+	siteLogoUrl: siteLogoUrlProp,
+} = Astro.props;
+
+const logoFromEnv =
+	(typeof import.meta.env.PUBLIC_SITE_LOGO_URL === 'string' && import.meta.env.PUBLIC_SITE_LOGO_URL.trim()) || '';
+
+const builtInLogoFsPath = join(process.cwd(), 'public', 'images', 'hum-logo.png');
+const hasBuiltInLogoFile = existsSync(builtInLogoFsPath);
+const navLogoSrc =
+	(typeof siteLogoUrlProp === 'string' && siteLogoUrlProp.trim()) ||
+	logoFromEnv ||
+	(hasBuiltInLogoFile ? DEFAULT_LOGO_PUBLIC_PATH : null);
+
+const envYt = (typeof import.meta.env.PUBLIC_YOUTUBE_CHANNEL_URL === 'string' && import.meta.env.PUBLIC_YOUTUBE_CHANNEL_URL.trim()) || '';
+const youtubeUrl = youtubeUrlProp ?? (envYt || DEFAULT_YOUTUBE_CHANNEL_URL);
+const envIg = (typeof import.meta.env.PUBLIC_INSTAGRAM_URL === 'string' && import.meta.env.PUBLIC_INSTAGRAM_URL.trim()) || '';
+const instagramUrl = instagramUrlProp ?? (envIg || DEFAULT_INSTAGRAM_URL);
+
+const envSupportEmail =
+	(typeof import.meta.env.PUBLIC_SUPPORT_EMAIL === 'string' && import.meta.env.PUBLIC_SUPPORT_EMAIL.trim()) || '';
+const humEmail = envSupportEmail || DEFAULT_HUM_EMAIL;
+
+const pathname = Astro.url.pathname;
+
+function navLinkClass(href: string): string {
+	const base =
+		'rounded-md px-3 py-2 text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hum-green';
+	const active = 'bg-hum-black text-hum-white';
+	const idle = 'text-hum-black hover:bg-black/5';
+	if (href === '/') {
+		return pathname === '/' ? `${base} ${active}` : `${base} ${idle}`;
+	}
+	return pathname === href || pathname.startsWith(`${href}/`)
+		? `${base} ${active}`
+		: `${base} ${idle}`;
+}
+---
+
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="description" content={description} />
+		<title>{title}</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,600&display=swap"
+			rel="stylesheet"
+		/>
+		<ClientRouter />
+	</head>
+	<body class="min-h-dvh bg-hum-white font-sans text-hum-black antialiased">
+		<a
+			href="#main"
+			class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-hum-black focus:px-4 focus:py-2 focus:text-hum-white"
+		>
+			Skip to content
+		</a>
+
+		<header
+			class="sticky top-0 z-50 border-b border-black/10 bg-hum-white/90 backdrop-blur-md supports-[backdrop-filter]:bg-hum-white/80"
+		>
+			<div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
+				<div class="flex min-w-0 flex-1 items-center gap-4">
+					<a
+						href="/"
+						class="flex shrink-0 items-center gap-2 transition-opacity hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hum-green"
+						aria-label="Hum A Cappella home"
+					>
+						{
+							navLogoSrc ? (
+								<img
+									src={navLogoSrc}
+									alt=""
+									width={160}
+									height={40}
+									class="h-8 w-auto max-h-9 max-w-[min(10rem,40vw)] object-contain object-left"
+									loading="eager"
+									decoding="async"
+								/>
+							) : (
+								<span class="font-heading text-xl font-bold tracking-tight text-hum-black">Hum</span>
+							)
+						}
+					</a>
+
+					<nav class="hidden min-w-0 flex-1 items-center justify-center gap-1 lg:flex" aria-label="Primary">
+						{navItems.map((item) => (
+							<a href={item.href} class={navLinkClass(item.href)}>
+								{item.label}
+							</a>
+						))}
+					</nav>
+				</div>
+
+				<div class="flex flex-wrap items-center justify-end gap-2">
+					<a
+						href={donateUrl}
+						class="hidden rounded-md bg-hum-green px-3 py-2 text-sm font-semibold text-hum-black shadow-sm transition-colors hover:bg-hum-green-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hum-black sm:inline-flex"
+					>
+						Pitch In
+					</a>
+
+					<details class="group relative lg:hidden">
+						<summary
+							class="flex cursor-pointer list-none items-center gap-2 rounded-md border border-black/15 bg-white px-3 py-2 text-sm font-semibold text-hum-black [&::-webkit-details-marker]:hidden"
+							aria-label="Open menu"
+						>
+							<span aria-hidden="true" class="grid gap-1">
+								<span class="block h-0.5 w-5 bg-hum-black"></span>
+								<span class="block h-0.5 w-5 bg-hum-black"></span>
+								<span class="block h-0.5 w-5 bg-hum-black"></span>
+							</span>
+							Menu
+						</summary>
+						<div
+							class="absolute right-0 z-50 mt-2 w-[min(100vw-2rem,20rem)] rounded-lg border border-black/10 bg-hum-white p-3 shadow-lg"
+							role="navigation"
+							aria-label="Mobile primary"
+						>
+							<nav class="flex flex-col gap-1">
+								{navItems.map((item) => (
+									<a href={item.href} class={`${navLinkClass(item.href)} block`}>
+										{item.label}
+									</a>
+								))}
+							</nav>
+						</div>
+					</details>
+				</div>
+			</div>
+
+			<div class="border-t border-black/5 bg-hum-white/95 px-4 py-2 sm:hidden">
+				<div class="mx-auto max-w-6xl">
+					<a
+						href={donateUrl}
+						class="block rounded-md bg-hum-green py-2 text-center text-xs font-semibold text-hum-black shadow-sm"
+					>
+						Pitch In
+					</a>
+				</div>
+			</div>
+		</header>
+
+		<main id="main">
+			<slot />
+		</main>
+
+		<footer class="mt-auto border-t border-black/10 bg-hum-black text-hum-white">
+			<div class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+				<div class="flex flex-col gap-10 sm:flex-row sm:items-start sm:justify-between">
+					<div>
+						<p class="font-heading text-2xl font-bold">Hum A Cappella</p>
+						<p class="mt-2 max-w-sm text-sm text-white/75">
+							South Asian fusion a cappella at The University of Texas at Austin.
+						</p>
+					</div>
+					<nav class="flex flex-col gap-4 sm:items-end" aria-label="Footer">
+						<a
+							href={`mailto:${humEmail}`}
+							class="text-sm font-medium text-white/90 underline-offset-4 hover:text-hum-green hover:underline"
+						>
+							Email Us
+						</a>
+						<a
+							href={instagramUrl}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="text-sm font-medium text-white/90 underline-offset-4 hover:text-hum-green hover:underline"
+						>
+							Instagram
+						</a>
+						<a
+							href={youtubeUrl}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="text-sm font-medium text-white/90 underline-offset-4 hover:text-hum-green hover:underline"
+						>
+							YouTube
+						</a>
+					</nav>
+				</div>
+				<div class="mt-10 space-y-1.5 border-t border-white/10 pt-8 text-center text-xs text-white/50">
+					<p>© {new Date().getFullYear()} Hum A Cappella. All rights reserved.</p>
+					<p class="text-white/40">Site design by Arnav Chopra.</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>
+
+<style is:global>
+	html {
+		font-family: var(--font-sans);
+	}
+	body {
+		display: flex;
+		flex-direction: column;
+	}
+</style>

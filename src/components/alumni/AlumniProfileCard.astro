@@ -1,0 +1,100 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import profileMedia from '../../constants/profile-media.json';
+
+type Props = {
+	entry: CollectionEntry<'alumni'>;
+};
+
+const { entry } = Astro.props;
+const { name, humYears, city, bio, photo } = entry.data;
+
+const initials = name
+	.split(/\s+/)
+	.filter(Boolean)
+	.slice(0, 2)
+	.map((p) => p[0]?.toUpperCase() ?? '')
+	.join('');
+---
+
+<article
+	class="flex flex-col overflow-hidden rounded-xl border border-hum-green/25 bg-gradient-to-b from-hum-green/10 to-white shadow-sm transition-shadow hover:shadow-md"
+>
+	<div class="aspect-square w-full bg-black/5">
+		{
+			photo ? (
+				<img
+					src={photo}
+					alt={`Portrait of ${name}`}
+					class="h-full w-full object-cover"
+					loading="lazy"
+					decoding="async"
+					width={profileMedia.recommendedWidth}
+					height={profileMedia.recommendedHeight}
+				/>
+			) : (
+				<div
+					class="flex h-full w-full items-center justify-center bg-gradient-to-br from-hum-green/40 to-black/10 font-heading text-2xl font-bold text-hum-black/70"
+					aria-hidden="true"
+				>
+					{initials}
+				</div>
+			)
+		}
+	</div>
+	<div class="flex flex-1 flex-col gap-1 p-2.5">
+		<h3 class="font-heading text-sm font-bold text-hum-black">{name}</h3>
+		<div class="mt-1.5 flex flex-wrap items-stretch gap-1.5">
+			<span
+				class="inline-flex max-w-full items-center gap-1 rounded-full border border-hum-green-dark/25 bg-hum-green/30 px-2.5 py-1 text-[10px] font-semibold leading-tight text-neutral-800"
+				title={`Current location: ${city}`}
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					class="h-3.5 w-3.5 shrink-0 text-hum-green-dark/90"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke-width="1.75"
+					stroke="currentColor"
+					aria-hidden="true"
+				>
+					<path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0Z" />
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0Z"
+					/>
+				</svg>
+				<span class="min-w-0">{city}</span>
+			</span>
+			<span
+				class="inline-flex max-w-full items-center gap-1 rounded-full border border-neutral-300/80 bg-neutral-200/90 px-2.5 py-1 text-[10px] font-semibold tracking-wide text-neutral-700"
+				title={`Years on Hum: ${humYears}`}
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					class="h-3.5 w-3.5 shrink-0 text-neutral-500"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke-width="1.75"
+					stroke="currentColor"
+					aria-hidden="true"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						d="M6.75 3V5.25M17.25 3V5.25M3 18.75V7.5C3 6.25736 4.00736 5.25 5.25 5.25H18.75C19.9926 5.25 21 6.25736 21 7.5V18.75M3 18.75C3 19.9926 4.00736 21 5.25 21H18.75C19.9926 21 21 19.9926 21 18.75M3 18.75V11.25C3 10.0074 4.00736 9 5.25 9H18.75C19.9926 9 21 10.0074 21 11.25V18.75"
+					/>
+				</svg>
+				<span class="min-w-0 normal-case">{humYears}</span>
+			</span>
+		</div>
+		<div class="mt-2 flex max-w-full gap-3">
+			<span
+				class="w-1 shrink-0 self-stretch rounded-full bg-hum-green-dark/50"
+				aria-hidden="true"
+			/>
+			<p class="min-w-0 flex-1 text-[11px] italic leading-snug text-neutral-700">{bio}</p>
+		</div>
+	</div>
+</article>

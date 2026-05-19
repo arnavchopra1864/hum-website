@@ -1,0 +1,95 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+type Props = {
+	entry: CollectionEntry<'music'>;
+};
+
+const { entry } = Astro.props;
+const { title, eyebrow, kind, description, externalUrl, ctaLabel } = entry.data;
+
+const KIND_BADGES: Record<typeof kind, { label: string; className: string }> = {
+	streaming: {
+		label: 'Streaming',
+		className: 'bg-black/[0.06] text-black/70',
+	},
+	archive: {
+		label: 'Archive',
+		className: 'bg-black/[0.06] text-black/70',
+	},
+	coming_soon: {
+		label: 'Coming soon',
+		className: 'bg-hum-green text-hum-black ring-2 ring-hum-black/10',
+	},
+};
+
+const linkClass =
+	'inline-flex items-center gap-1.5 text-sm font-medium text-black/75 underline decoration-black/25 underline-offset-[3px] transition-colors hover:text-hum-black hover:decoration-hum-green focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hum-green';
+const badge = KIND_BADGES[kind];
+const isComingSoon = kind === 'coming_soon';
+---
+
+<article
+	class:list={[
+		'relative flex h-full flex-col overflow-hidden rounded-xl border p-6 transition-shadow',
+		isComingSoon
+			? 'border-2 border-hum-green bg-gradient-to-br from-hum-green/35 via-hum-green/15 to-white shadow-md ring-4 ring-hum-green/25 hover:shadow-lg'
+			: 'border border-black/10 bg-white hover:border-black/15',
+	]}
+>
+	{
+		isComingSoon ? (
+			<div
+				class="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-hum-green/30 blur-2xl"
+				aria-hidden="true"
+			/>
+		) : null
+	}
+	<div class="relative flex flex-wrap items-center gap-2">
+		<span
+			class:list={[
+				'inline-flex rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wide',
+				badge.className,
+			]}
+		>
+			{badge.label}
+		</span>
+		<span
+			class:list={[
+				'text-xs font-semibold uppercase tracking-widest',
+				isComingSoon ? 'text-hum-black/70' : 'text-black/55',
+			]}
+		>
+			{eyebrow}
+		</span>
+	</div>
+	<h3 class="relative mt-4 font-heading text-xl font-bold tracking-tight text-hum-black sm:text-2xl">{title}</h3>
+	<p
+		class:list={[
+			'relative mt-3 flex-1 whitespace-pre-line text-sm leading-relaxed',
+			isComingSoon ? 'text-hum-black/85' : 'text-black/80',
+		]}
+	>
+		{description}
+	</p>
+
+	<div
+		class:list={['relative mt-6 border-t pt-5', isComingSoon ? 'border-hum-black/15' : 'border-black/10']}
+	>
+		{
+			externalUrl ? (
+				<a href={externalUrl} target="_blank" rel="noopener noreferrer" class={linkClass}>
+					{ctaLabel ?? 'Open'}
+					<span aria-hidden="true">↗</span>
+				</a>
+			) : kind === 'coming_soon' ? (
+				<p class="inline-flex items-center gap-2 text-sm font-semibold text-hum-black">
+					<span class="inline-block h-2 w-2 animate-pulse rounded-full bg-hum-green-dark" aria-hidden="true" />
+					Stay tuned!
+				</p>
+			) : (
+				<p class="text-sm text-black/50">Link coming soon.</p>
+			)
+		}
+	</div>
+</article>

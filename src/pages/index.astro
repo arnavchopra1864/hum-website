@@ -1,17 +1,43 @@
 ---
+import Layout from '../layouts/Layout.astro';
+import HomeHero from '../components/home/HomeHero.astro';
+import HomeHypeVideo from '../components/home/HomeHypeVideo.astro';
+import HomePrimaryCtas from '../components/home/HomePrimaryCtas.astro';
+import HomeWatchUs from '../components/home/HomeWatchUs.astro';
+import HomeLatestHighlights from '../components/home/HomeLatestHighlights.astro';
+import ReunionSiteBand from '../components/ReunionSiteBand.astro';
+import { DEFAULT_PERFORMANCE_REQUEST_FORM_URL } from '../constants/performance';
+import { DEFAULT_JOIN_INTEREST_FORM_URL } from '../constants/recruiting';
+import { DEFAULT_INSTAGRAM_URL } from '../constants/social';
+import { DEFAULT_YOUTUBE_CHANNEL_URL } from '../constants/youtube';
 
+const performanceRequestFormUrl =
+	(typeof import.meta.env.PUBLIC_PERFORMANCE_REQUEST_FORM_URL === 'string' &&
+		import.meta.env.PUBLIC_PERFORMANCE_REQUEST_FORM_URL.trim()) ||
+	DEFAULT_PERFORMANCE_REQUEST_FORM_URL;
+const joinInterestFormUrl =
+	(typeof import.meta.env.PUBLIC_JOIN_INTEREST_FORM_URL === 'string' &&
+		import.meta.env.PUBLIC_JOIN_INTEREST_FORM_URL.trim()) ||
+	DEFAULT_JOIN_INTEREST_FORM_URL;
+const donateUrl = '/support#donate';
+const youtubeChannel =
+	(typeof import.meta.env.PUBLIC_YOUTUBE_CHANNEL_URL === 'string' && import.meta.env.PUBLIC_YOUTUBE_CHANNEL_URL.trim()) ||
+	DEFAULT_YOUTUBE_CHANNEL_URL;
+const instagramUrl =
+	(typeof import.meta.env.PUBLIC_INSTAGRAM_URL === 'string' && import.meta.env.PUBLIC_INSTAGRAM_URL.trim()) ||
+	DEFAULT_INSTAGRAM_URL;
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title="Hum A Cappella | Home">
+{/* REMOVE THIS AFTER ALUMNI MEET */}
+	<ReunionSiteBand />
+	<HomeHero />
+	<HomePrimaryCtas
+		performanceRequestFormUrl={performanceRequestFormUrl}
+		joinInterestFormUrl={joinInterestFormUrl}
+		donateUrl={donateUrl}
+	/>
+	<HomeHypeVideo />
+	<HomeWatchUs channelUrl={youtubeChannel} />
+	<HomeLatestHighlights instagramUrl={instagramUrl} />
+</Layout>

@@ -1,0 +1,60 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import profileMedia from '../../constants/profile-media.json';
+
+type Props = {
+	entry: CollectionEntry<'team'>;
+};
+
+const { entry } = Astro.props;
+const { name, voicePart, leadershipRole, photo } = entry.data;
+
+const initials = name
+	.split(/\s+/)
+	.filter(Boolean)
+	.slice(0, 2)
+	.map((p) => p[0]?.toUpperCase() ?? '')
+	.join('');
+---
+
+<article
+	class="flex flex-col overflow-hidden rounded-xl border border-hum-green/25 bg-gradient-to-b from-hum-green/10 to-white shadow-sm transition-shadow hover:shadow-md"
+>
+	<div class="aspect-square w-full bg-black/5">
+		{
+			photo ? (
+				<img
+					src={photo}
+					alt={`Portrait of ${name}`}
+					class="h-full w-full object-cover"
+					loading="lazy"
+					decoding="async"
+					width={profileMedia.recommendedWidth}
+					height={profileMedia.recommendedHeight}
+				/>
+			) : (
+				<div
+					class="flex h-full w-full items-center justify-center bg-gradient-to-br from-hum-green/40 to-black/10 font-heading text-2xl font-bold text-hum-black/70"
+					aria-hidden="true"
+				>
+					{initials}
+				</div>
+			)
+		}
+	</div>
+	<div class="flex flex-1 flex-col gap-1 p-2.5">
+		<h3 class="font-heading text-sm font-bold text-hum-black">{name}</h3>
+		<div class="mt-1.5 flex flex-wrap items-center gap-1.5">
+			{
+				leadershipRole ? (
+					<span class="inline-flex max-w-full rounded-full bg-hum-black px-2.5 py-1 text-[10px] font-semibold leading-snug text-hum-white">
+						{leadershipRole}
+					</span>
+				) : null
+			}
+			<span class="inline-flex rounded-full bg-hum-green px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-hum-black">
+				{voicePart}
+			</span>
+		</div>
+	</div>
+</article>

@@ -1,0 +1,55 @@
+---
+type Props = {
+	instagramUrl: string;
+};
+
+const { instagramUrl } = Astro.props;
+const embedUrl = (import.meta.env.PUBLIC_INSTAGRAM_FEED_EMBED_URL as string | undefined)?.trim() || null;
+---
+
+<section class="py-16 sm:py-24" aria-labelledby="highlights-heading">
+	<div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+		<div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+			<div>
+				<h2 id="highlights-heading" class="font-heading text-3xl font-bold text-hum-black sm:text-4xl">
+					Latest highlights
+				</h2>
+				<p class="mt-2 max-w-2xl text-sm text-black/70">
+					Live Instagram grid or Reels via embed widget — updates when your provider syncs from Instagram (no manual site
+					edits).
+				</p>
+			</div>
+			<a
+				href={instagramUrl}
+				target="_blank"
+				rel="noopener noreferrer"
+				class="shrink-0 text-sm font-semibold text-hum-green underline underline-offset-4 hover:text-hum-green-dark"
+			>
+				Open Instagram →
+			</a>
+		</div>
+
+		{
+			embedUrl ? (
+				<div class="mt-10 overflow-hidden rounded-xl border border-black/10 bg-white shadow-sm">
+					<iframe
+						src={embedUrl}
+						title="Hum on Instagram"
+						class="h-[min(720px,80vh)] w-full min-h-[480px]"
+						loading="lazy"
+						referrerpolicy="strict-origin-when-cross-origin"
+					/>
+				</div>
+			) : (
+				<div class="mt-10 flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-black/20 bg-gradient-to-b from-hum-green/10 to-transparent px-6 py-20 text-center">
+					<p class="max-w-lg text-sm text-black/75">
+						Set <code class="rounded bg-black/5 px-1.5 py-0.5 font-mono text-xs">PUBLIC_INSTAGRAM_FEED_EMBED_URL</code> in{' '}
+						<code class="rounded bg-black/5 px-1.5 py-0.5 font-mono text-xs">.env</code> to the HTTPS embed URL from your
+						Instagram feed widget embed URL (Fouita, Curator, Juicer, etc.).
+					</p>
+					<p class="text-xs text-black/50">Until then, visitors can use the link above for daily Reels and posts.</p>
+				</div>
+			)
+		}
+	</div>
+</section>

@@ -1,0 +1,238 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import AlumniProfileCard from '../components/alumni/AlumniProfileCard.astro';
+import AlumniInteractionSection from '../components/alumni/AlumniInteractionSection.astro';
+import PageHero from '../components/PageHero.astro';
+import {
+	ALUMNI_PROFILE_PHOTO_MAX_LABEL,
+	ALUMNI_PROFILE_PHOTO_PREFIX,
+} from '../constants/alumni';
+import { DEFAULT_ALUMNI_FORM_URL } from '../constants/alumni-form';
+import {
+	REUNION_ANCHOR_ID,
+	REUNION_EVENTBRITE_TICKETS_URL,
+	REUNION_SECTION_HEADING,
+	REUNION_SECTION_EYEBROW,
+	REUNION_SECTION_PARAGRAPHS,
+	REUNION_TICKET_CTA_LABEL,
+} from '../constants/reunion';
+
+const envFormUrl = (typeof import.meta.env.PUBLIC_ALUMNI_FORM_URL === 'string' && import.meta.env.PUBLIC_ALUMNI_FORM_URL.trim()) || '';
+const formUrl = envFormUrl || DEFAULT_ALUMNI_FORM_URL;
+
+const allAlumni = await getCollection('alumni');
+const visible = allAlumni
+	.filter((e) => !e.data.draft)
+	.sort((a, b) => {
+		// const s = a.data.sortOrder - b.data.sortOrder;
+		// if (s !== 0) return s;
+		return a.data.name.localeCompare(b.data.name);
+	});
+const featured = visible.filter((e) => e.data.featured);
+const rest = visible.filter((e) => !e.data.featured);
+const ordered = [...featured, ...rest];
+
+function parseHumYearRange(humYears: string): { start: number; end: number } | null {
+	// Accepts "2021–2025", "2021-2025", "2021 — 2025", or "2021".
+	const cleaned = humYears.replace(/[^\d–—-]/g, '');
+	const parts = cleaned.split(/[–—-]/).map((p) => p.trim()).filter(Boolean);
+	if (parts.length === 0) return null;
+	const start = Number(parts[0]);
+	const end = Number(parts[parts.length - 1]);
+	if (!Number.isFinite(start)) return null;
+	if (!Number.isFinite(end)) return { start, end: start };
+	return { start: Math.min(start, end), end: Math.max(start, end) };
+}
+
+const cities = Array.from(new Set(ordered.map((e) => e.data.city).filter(Boolean))).sort((a, b) =>
+	a.localeCompare(b),
+);
+
+const ranges = ordered.map((e) => parseHumYearRange(e.data.humYears)).filter(Boolean) as Array<{ start: number; end: number }>;
+const yearMin = ranges.length ? Math.min(...ranges.map((r) => r.start)) : null;
+const yearMax = ranges.length ? Math.max(...ranges.map((r) => r.end)) : null;
+const years = yearMin !== null && yearMax !== null ? Array.from({ length: yearMax - yearMin + 1 }, (_, i) => yearMin + i) : [];
+
+const ALUMNI_HERO_TITLE_LEAD = 'Once Hum,';
+const ALUMNI_HERO_TITLE_EMPHASIS = 'always Hum';
+const ALUMNI_HERO_INTRO = 'Reconnect with Hum, find alumni near you, and stay in the loop.';
+---
+
+<Layout
+	title="Hum A Cappella | Alumni"
+	description="Once Hum, always Hum — reconnect with UT Austin's South Asian fusion a cappella alumni network."
+>
+	<PageHero
+		id="alumni-hub-heading"
+		titleLead={ALUMNI_HERO_TITLE_LEAD}
+		titleEmphasis={ALUMNI_HERO_TITLE_EMPHASIS}
+		intro={ALUMNI_HERO_INTRO}
+	/>
+
+	<section
+		id={REUNION_ANCHOR_ID}
+		class="scroll-mt-28 border-b border-black/10"
+		aria-labelledby="alumni-reunion-heading"
+	>
+		<div class="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
+			<p class="text-sm font-semibold uppercase tracking-widest text-hum-green">{REUNION_SECTION_EYEBROW}</p>
+			<h2 id="alumni-reunion-heading" class="mt-2 font-heading text-2xl font-bold text-hum-black sm:text-3xl">
+				{REUNION_SECTION_HEADING}
+			</h2>
+			<div class="mt-4 max-w-3xl space-y-4 text-sm leading-relaxed text-black/80 sm:text-base">
+				{REUNION_SECTION_PARAGRAPHS.map((paragraph) => (
+					<p>{paragraph}</p>
+				))}
+			</div>
+			<div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+				<a
+					href={REUNION_EVENTBRITE_TICKETS_URL}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="inline-flex min-h-[48px] items-center justify-center rounded-md bg-hum-green px-6 py-3 text-center text-sm font-semibold text-hum-black shadow-sm transition-colors hover:bg-hum-green-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hum-green"
+				>
+					{REUNION_TICKET_CTA_LABEL}
+				</a>
+			</div>
+		</div>
+	</section>
+
+	<section class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8" aria-labelledby="alumni-directory-heading">
+		<div class="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+			<div class="space-y-4">
+				<h2 id="alumni-directory-heading" class="font-heading text-3xl font-bold text-hum-black">
+					Alumni around the world
+				</h2>
+				<p class="max-w-2xl text-sm text-black/75">
+					The voices that built Hum, and where they're going next. Want your profile here? Submit the form below — we&apos;ll publish it after a
+					quick review.
+				</p>
+				{
+					formUrl ? (
+						<a
+							href={formUrl}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="inline-flex w-fit items-center justify-center rounded-md bg-hum-black px-6 py-3 text-center text-sm font-semibold text-hum-white transition-colors hover:bg-black/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hum-green"
+						>
+							Join the alumni network
+						</a>
+					) : (
+						<p class="rounded-md border border-dashed border-black/25 bg-black/[0.02] px-4 py-3 text-sm text-black/70">
+							Set <code class="rounded bg-black/5 px-1.5 py-0.5 font-mono text-xs">PUBLIC_ALUMNI_FORM_URL</code> in{' '}
+							<code class="rounded bg-black/5 px-1.5 py-0.5 font-mono text-xs">.env</code> to link the external intake form.
+						</p>
+					)
+				}
+			</div>
+			<div class="flex flex-col gap-3 sm:w-72">
+				<label class="text-xs font-semibold uppercase tracking-wide text-black/60">
+					<span class="sr-only">Search alumni by name</span>
+					<input
+						id="alumni-search"
+						type="search"
+						placeholder="Search by name"
+						class="w-full rounded-md border border-black/15 bg-white px-3 py-2 text-sm text-hum-black shadow-sm outline-none placeholder:text-black/40 focus:border-hum-green focus:ring-2 focus:ring-hum-green/40"
+					/>
+				</label>
+				<label class="text-xs font-semibold uppercase tracking-wide text-black/60">
+					<span class="sr-only">Filter alumni by year</span>
+					<select
+						id="alumni-year-filter"
+						class="w-full rounded-md border border-black/15 bg-white px-3 py-2 text-sm text-hum-black shadow-sm outline-none focus:border-hum-green focus:ring-2 focus:ring-hum-green/40"
+					>
+						<option value="">All years</option>
+						{years.map((y) => (
+							<option value={y}>{y}</option>
+						))}
+					</select>
+				</label>
+				<label class="text-xs font-semibold uppercase tracking-wide text-black/60">
+					<span class="sr-only">Filter alumni by location</span>
+					<select
+						id="alumni-city-filter"
+						class="w-full rounded-md border border-black/15 bg-white px-3 py-2 text-sm text-hum-black shadow-sm outline-none focus:border-hum-green focus:ring-2 focus:ring-hum-green/40"
+					>
+						<option value="">All locations</option>
+						{cities.map((city) => (
+							<option value={city}>{city}</option>
+						))}
+					</select>
+				</label>
+			</div>
+		</div>
+
+		{
+			ordered.length === 0 ? (
+				<p class="mt-10 rounded-lg border border-dashed border-black/20 bg-black/[0.02] px-6 py-12 text-center text-black/70">
+					Directory entries coming soon. Alumni can add themselves via the network form.
+				</p>
+			) : (
+				<ul
+					id="alumni-directory-grid"
+					class="mt-10 grid list-none gap-6 sm:grid-cols-2 lg:grid-cols-3"
+				>
+					{ordered.map((entry) => (
+						(() => {
+							const r = parseHumYearRange(entry.data.humYears);
+							const start = r?.start ?? 0;
+							const end = r?.end ?? 0;
+							return (
+						<li
+							data-city={entry.data.city.toLowerCase()}
+							data-name={entry.data.name.toLowerCase()}
+							data-year-start={String(start)}
+							data-year-end={String(end)}
+						>
+							<AlumniProfileCard entry={entry} />
+						</li>
+							);
+						})()
+					))}
+				</ul>
+			)
+		}
+	</section>
+
+	<AlumniInteractionSection />
+</Layout>
+
+<script>
+	const grid = document.getElementById('alumni-directory-grid');
+	const citySelect = document.getElementById('alumni-city-filter');
+	const searchInput = document.getElementById('alumni-search');
+	const yearSelect = document.getElementById('alumni-year-filter');
+
+	if (grid && citySelect && searchInput && yearSelect) {
+		const items = Array.from(grid.querySelectorAll('li')) as HTMLLIElement[];
+
+		const applyFilters = () => {
+			const city = (citySelect as HTMLSelectElement).value.toLowerCase();
+			const query = (searchInput as HTMLInputElement).value.toLowerCase();
+			const yearRaw = (yearSelect as HTMLSelectElement).value;
+			const year = yearRaw ? Number(yearRaw) : null;
+
+			for (const li of items) {
+				const itemCity = (li.dataset.city || '').toLowerCase();
+				const itemName = (li.dataset.name || '').toLowerCase();
+				const start = Number(li.dataset.yearStart || '0');
+				const end = Number(li.dataset.yearEnd || '0');
+
+				const cityMatches = !city || itemCity === city;
+				const nameMatches = !query || itemName.includes(query);
+				const yearMatches = year === null || (Number.isFinite(start) && Number.isFinite(end) && start <= year && year <= end);
+
+				const show = cityMatches && nameMatches && yearMatches;
+				li.classList.toggle('hidden', !show);
+			}
+		};
+
+		citySelect.addEventListener('change', applyFilters);
+		yearSelect.addEventListener('change', applyFilters);
+		searchInput.addEventListener('input', applyFilters);
+
+		// Apply on load so persisted filter UI state does not leave all cards hidden.
+		applyFilters();
+	}
+</script>

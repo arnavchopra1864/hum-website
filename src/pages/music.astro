@@ -1,0 +1,54 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import MusicReleaseCard from '../components/music/MusicReleaseCard.astro';
+import PageHero from '../components/PageHero.astro';
+
+const allMusic = await getCollection('music');
+const visible = allMusic.filter((e) => !e.data.draft).sort((a, b) => {
+	const s = a.data.sortOrder - b.data.sortOrder;
+	if (s !== 0) return s;
+	return a.data.title.localeCompare(b.data.title);
+});
+
+const HERO_TITLE_LEAD = 'Our music,';
+const HERO_TITLE_EMPHASIS = 'over the years';
+const HERO_INTRO =
+	'A complete archive of studio releases, digital albums, and everything in between — from our first CD to what\'s coming next.';
+---
+
+<Layout
+	title="Hum A Cappella | Music"
+	description="Stream Hum’s catalogue on YouTube Music, explore archival recordings, and watch for the next Hum release — UT Austin’s South Asian fusion a cappella team."
+>
+	<PageHero
+		id="music-heading"
+		titleLead={HERO_TITLE_LEAD}
+		titleEmphasis={HERO_TITLE_EMPHASIS}
+		intro={HERO_INTRO}
+	/>
+
+	<section class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8" aria-labelledby="releases-heading">
+		<h2 id="releases-heading" class="font-heading text-2xl font-bold text-hum-black sm:text-3xl">
+			Discography
+		</h2>
+
+		{
+			visible.length === 0 ? (
+				<p class="mt-10 rounded-lg border border-dashed border-black/20 bg-black/[0.02] px-6 py-12 text-center text-black/70">
+					Music entries coming soon. Add markdown files under{' '}
+					<code class="rounded bg-black/5 px-1.5 py-0.5 font-mono text-xs">src/content/music/</code> with{' '}
+					<code class="rounded bg-black/5 px-1.5 py-0.5 font-mono text-xs">draft: false</code>.
+				</p>
+			) : (
+				<ul class="mt-10 grid list-none gap-6 lg:grid-cols-2">
+					{visible.map((entry) => (
+						<li class:list={entry.data.kind === 'coming_soon' && 'lg:col-span-2'}>
+							<MusicReleaseCard entry={entry} />
+						</li>
+					))}
+				</ul>
+			)
+		}
+	</section>
+</Layout>

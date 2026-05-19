@@ -1,0 +1,43 @@
+---
+type Props = {
+	performanceRequestFormUrl: string;
+	joinInterestFormUrl: string;
+	donateUrl: string;
+};
+
+const { performanceRequestFormUrl, joinInterestFormUrl, donateUrl } = Astro.props;
+---
+
+<section class="border-b border-black/10 bg-hum-white py-12 sm:py-16" aria-labelledby="primary-ctas-heading">
+	<h2 id="primary-ctas-heading" class="sr-only">Primary actions</h2>
+	<div class="mx-auto flex max-w-6xl flex-col gap-3 px-4 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4 sm:px-6 lg:px-8">
+		<a
+			href={performanceRequestFormUrl}
+			target="_blank"
+			rel="noopener noreferrer"
+			class="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-md border-2 border-hum-black bg-hum-black px-6 py-3 text-center text-sm font-semibold text-hum-white transition-colors hover:bg-black/90 sm:flex-none sm:min-w-[11rem]"
+		>
+			Book a performance
+		</a>
+		<a
+			href={joinInterestFormUrl}
+			target="_blank"
+			rel="noopener noreferrer"
+			class="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-md border-2 border-hum-green bg-hum-green/15 px-6 py-3 text-center text-sm font-semibold text-hum-black transition-colors hover:bg-hum-green sm:flex-none sm:min-w-[11rem]"
+		>
+			Join Us
+		</a>
+		<a
+			href="/support#sponsor"
+			class="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-md border-2 border-hum-black px-6 py-3 text-center text-sm font-semibold text-hum-black transition-colors hover:bg-hum-black hover:text-hum-white sm:flex-none sm:min-w-[11rem]"
+		>
+			Sponsor Hum
+		</a>
+		<a
+			href={donateUrl}
+			class="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-md bg-hum-green px-6 py-3 text-center text-sm font-semibold text-hum-black shadow-sm transition-colors hover:bg-hum-green-dark sm:flex-none sm:min-w-[11rem]"
+		>
+			Pitch In
+		</a>
+	</div>
+</section>

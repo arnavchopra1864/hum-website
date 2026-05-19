@@ -1,0 +1,9 @@
+# Hum A Cappella Website Rules
+- Framework: Astro (with View Transitions enabled).
+- Styling: Tailwind CSS.
+- Tech Stack: TypeScript (Strict).
+- Colors: White, Black, and Light Green
+- Design Vibe: Modern, high-energy South Asian Fusion. Bold serifs for headlines, clean sans-serif for body. Hummingbird Logo
+- Content: Use Content Collections in `src/content.config.ts` (see `src/content/alumni/`) for Team Members and Alumni.
+- Copy: Before changing member-facing voice, slang, or warm informal phrasing (e.g. in `HomeWhatWeDo.astro`), ask the user first unless they explicitly requested that edit.
+- Handoff: When adding/changing `PUBLIC_*` env vars or maintainer workflows, add a dated row to the **Site updates log** table in `README.md`.
