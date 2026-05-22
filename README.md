@@ -180,6 +180,7 @@ IMPORTANT: Do **not** put photos under `src/`—only under `public/images/...`.
 9. Open the person’s `.md` file:
    - Team: `src/content/team/firstname-lastname.md`
    - Alumni: `src/content/alumni/firstname-lastname.md`
+   
 10. In the **frontmatter** block between the `---` lines, set `photo` to the **exact** path:
 
 #### Part D — Check locally, then go live
