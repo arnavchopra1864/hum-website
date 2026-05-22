@@ -76,19 +76,6 @@ src/
 
 ---
 
-## Handoff assessment (how hard is changing certain things?)
-
-| Area | Non-technical ease | Notes |
-|------|-------------------|--------|
-| **Donation links, forms, email, social URLs** | **Good**. | Netlify uses “environment variables” which allow you to change links from the dashboard. Paste URLs and redeploy. No code.
-| **Alumni & team profiles** | **Good**. Requires familiarity with **Markdown** and **copy-paste frontmatter** | Make sure the `---` block at the top and bottom of each file is present. Other than that, normal writing.  Must follow the [alumni profile](#alumni-profiles) rules. A template file is provided. |
-| **Alumni & team photos** | **Moderate** | Whenever someone uploads an image to Google Drive: Resize with [Canva Image Resizer](https://www.canva.com/features/image-resizer/) to **800×800** px (or any square dimension). Save under `public/images/alumni/profiles/` or `public/images/team/profiles/`. Make sure the filename **case** matches in the markdown file. Max **1 MB** per file (There's a script to check: `npm run build`). See [Headshot uploads](#headshot-uploads-recommended-workflow-any-platform). |
-| **Home page copy (“What we do”, hero, etc.)** | **Moderate** | Text lives directly in `.astro` files under `src/components/home/`. Editing is fine, but you'll have to dive directly into the codebase. Quotes, commas, and indentation matter. |
-| **Adding new pages or layout/navigation changes** | **Developer** | Requires Astro and routing knowledge. Rely on AI here if no coding knowledge. |
-| **Instagram grid widget** | **Good** (URL swap) | Change `PUBLIC_INSTAGRAM_FEED_EMBED_URL` to the new embed URL from your provider (e.g. Fouita `https://emb.fouita.com/widget/...`). This is one example of environment variables coming in handy. |
-
----
-
 ## Environment variables (edit links without touching code)
 
 Many URLs and IDs are **not** hardcoded; they come from **environment variables**. Names start with `PUBLIC_` so they are safe to expose in the browser. (you may have heard of env vars being used to hide secrets such as API keys. You don't need to worry about secrecy here.)
@@ -133,31 +120,122 @@ Copy every key from `.env.example` into your host’s environment settings, then
 
 ---
 
-## Alumni profiles
+## Uploading pictures (team & alumni)
 
-- **Location:** `src/content/alumni/*.md` (one file per person).
-- **Template / instructions:** `src/content/alumni/template-stub.md` — duplicate and rename; set `draft: false` when ready to publish.
-- **Frontmatter fields:** `name`, `humYears`, `city`, `bio`, optional `featured`, `draft`, `photo`, `sortOrder`.
+Photos are not uploaded through Netlify or Google Forms automatically — you must manually add image files to the repo, then point each person’s Markdown file at that file. Until `photo` is set, the site shows **initials** on a colored square instead of a picture.
 
-**Adding pics to the site (download → resize → commit):**
+### Where things live
 
-1. Download the uploaded headshot from the form/Drive folder.
-2. Resize in Canva using the **[Image Resizer](https://www.canva.com/features/image-resizer/)** (free account is fine).
-3. Set dimensions to **800 × 800** (or **640 × 640** if you need a smaller file). The cards for Alumni and Team members expect squares.
-4. **Download** as **JPG**. Make sure files are under **1 MB**.
-5. Save to `public/images/alumni/profiles/` or `public/images/team/profiles/`.
-6. In the person’s Markdown file, set `photo` to the exact path, including **filename case** (e.g. `udbhav-narani.jpg` not `.JPG` if the file is lowercase).
-7. Run `npm run dev` to check locally before you push.
+| What | Folder |
+|------|--------|
+| Team photos | `public/images/team/profiles/` |
+| Alumni photos | `public/images/alumni/profiles/` |
+| Team roster text | `src/content/team/*.md` |
+| Alumni roster text | `src/content/alumni/*.md` |
+| Templates | `src/content/team/template-stub.md`, `src/content/alumni/template-stub.md` |
 
-- **Validation:** `npm run build` runs `npm run validate:profile-photos` first (team + alumni). If it fails, read the error: usually “file too large” or “photo path does not exist”.
+**New profile:** duplicate `template-stub.md`, rename the file (e.g. `john-doe.md`), fill in the frontmatter, delete comments & instructions, and set `draft: false` when ready to publish.
 
-For the curious: Schema rules are defined in `src/content.config.ts`.
+**Frontmatter fields**
+
+- **Alumni:** `name`, `humYears`, `city`, `bio`, optional `featured`, `draft`, `photo`, `sortOrder`
+- **Team:** `name`, `voicePart`, optional `leadershipRole`, `draft`, optional `photo`
+
+Schema rules live in `src/content.config.ts` if you need the technical detail.
+
+### Rules (the build will fail if you break these)
+
+- **Shape:** square **1:1** (cards crop to a square).
+- **Size:** **800 × 800** px recommended (640 × 640 is OK if you need a smaller file).
+- **File size:** **1 MB max** per image (`npm run build` checks this).
+- **Format:** **JPG**. Avoid PNG and WebP for consistency.
+- **Filename:** `firstname-lastname.jpg` (lowercase, hyphens). **Spelling and capitalization must match exactly** in the Markdown `photo` line.
+- **`photo` path:** always starts with `/images/...`, e.g. `/images/team/profiles/loy-bhowmick.jpg`.
 
 ---
 
-## Instagram Embed
+### The step-by-step
 
-The home page shows an embedded grid from third-party **Fouita**. Set **`PUBLIC_INSTAGRAM_FEED_EMBED_URL`** to the **embed** URL (typically `https://emb.fouita.com/widget/...`), not the script snippet. 
+#### Part A — Get and resize the image
+
+1. **Get the headshot** from your intake flow (Google Form attachment, shared Drive folder, etc.).
+2. Open **[Canva Image Resizer](https://www.canva.com/features/image-resizer/)** (free account is fine).
+3. Upload the photo.
+4. Set dimensions to **800 × 800** (lock aspect ratio to **square** if Canva asks).
+5. **Download as JPG.** If the file is still over 1 MB, export at **640 × 640** or lower JPG quality until it’s under 1 MB.
+6. **Rename the file** before you save it into the repo, e.g. `arjun-singhal.jpg`. Avoid spaces and special characters.
+
+**Note:** Even if the source already looks square and small, still run it through Canva once so every headshot is consistent.
+
+#### Part B — Add the file to the project
+
+7. In your code editor (or GitHub, if you must), put the JPG in the right folder:
+   - **Current team member** → `public/images/team/profiles/`
+   - **Alumni** → `public/images/alumni/profiles/`
+
+IMPORTANT: Do **not** put photos under `src/`—only under `public/images/...`.
+
+#### Part C — Link the photo in Markdown
+
+9. Open the person’s `.md` file:
+   - Team: `src/content/team/firstname-lastname.md`
+   - Alumni: `src/content/alumni/firstname-lastname.md`
+10. In the **frontmatter** block between the `---` lines, set `photo` to the **exact** path:
+
+#### Part D — Check locally, then go live
+
+13. From the project folder, run:
+
+```bash
+npm run dev
+```
+
+14. Open in your browser:
+   - Team → **http://localhost:4321/meet-the-team**
+   - Alumni → **http://localhost:4321/alumni**
+15. Confirm the face shows, isn’t stretched, and the right person appears.
+16. Run a full check (same as Netlify):
+
+```bash
+npm run build
+```
+
+If this fails, read the terminal message. Common fixes:
+
+| Error | What to do |
+|--------|------------|
+| Photo path does not exist | Fix typo in `photo:` or rename the file to match. Case-sensitive. |
+| File too large | Re-export smaller from Canva (under 1 MB) |
+| Collection / frontmatter error | Check `---` lines exist; copy fields from template |
+
+17. **Commit and push** to GitHub. Netlify rebuilds automatically; give it a minute, then refresh the live site.
+
+---
+
+### Quick reference — team vs alumni
+
+| | Team | Alumni |
+|---|------|--------|
+| Image folder | `public/images/team/profiles/` | `public/images/alumni/profiles/` |
+| Markdown folder | `src/content/team/` | `src/content/alumni/` |
+| Live page | `/meet-the-team` | `/alumni` |
+| Extra frontmatter | `voicePart`, optional `leadershipRole` | `humYears`, `city`, `bio`, optional `featured` |
+| Hidden until ready | `draft: true` | `draft: true` |
+
+### Updating someone’s photo
+
+1. Add the new JPG (new name or replace the old file).
+2. Update `photo:` if the filename changed.
+3. `npm run dev` → `npm run build` → push.
+
+Old unused JPGs in `profiles/` don’t break the site, but you can delete them in a separate cleanup commit to keep the folder tidy.
+
+### Do not
+
+- Commit photos over **1 MB** (build will reject).
+- Use Google Drive or form URLs in `photo:`—only paths under `/images/...` in this repo.
+- Mix up `.jpg` vs `.JPG` in the path vs filename.
+- Delete `template-stub.md`—it stays `draft: true` and is excluded from the public site.
 
 ---
 
@@ -167,6 +245,7 @@ _Add dated entries below whenever behavior, env vars, or maintainer workflows ch
 
 | Date | Change |
 |------|--------|
+| 2026-05-19 | README: expanded [Alumni profiles](#alumni-profiles-and-team-roster) with full team/alumni headshot workflow (Canva, folders, frontmatter, build validation). |
 | 2026-05-19 | Favicon: `Layout.astro` uses `/favicon.ico` only (removed missing `favicon.svg` link). `_redirects`: `/current-season/` → `/meet-the-team` (301) so trailing-slash URLs redirect cleanly on Netlify. |
 | 2026-05-18 | Netlify deploy: [`netlify.toml`](netlify.toml), [`public/_redirects`](public/_redirects) for `/current-season` → `/meet-the-team`. |
 | 2026-05-18 | Env audit: production-ready `.env.example`, removed unused **`PUBLIC_ALUMNI_GROUP_CHAT_URL`**, YouTube defaults in `src/constants/youtube.ts`. |
