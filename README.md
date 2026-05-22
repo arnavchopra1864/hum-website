@@ -180,7 +180,7 @@ IMPORTANT: Do **not** put photos under `src/`—only under `public/images/...`.
 9. Open the person’s `.md` file:
    - Team: `src/content/team/firstname-lastname.md`
    - Alumni: `src/content/alumni/firstname-lastname.md`
-   
+
 10. In the **frontmatter** block between the `---` lines, set `photo` to the **exact** path:
 
 #### Part D — Check locally, then go live
@@ -195,21 +195,33 @@ npm run dev
    - Team → **http://localhost:4321/meet-the-team**
    - Alumni → **http://localhost:4321/alumni**
 15. Confirm the face shows, isn’t stretched, and the right person appears.
-16. Run a full check (same as Netlify):
+16. **Stage both the Markdown and the image** (new JPGs are easy to forget):
+
+```bash
+git add src/content/team/your-person.md public/images/team/profiles/your-person.jpg
+git status
+```
+
+Under **“Changes to be committed”** you should see **both** the `.md` file and the `.jpg`. If the photo only appears under **“Untracked files”**, it will **not** go to GitHub until you `git add` it.
+
+17. Run a full check (same as Netlify):
 
 ```bash
 npm run build
 ```
+
+`npm run build` runs photo validation first. If a `photo:` path points at a file on your laptop that was never `git add`ed, the build **fails** with `photo exists locally but is not in Git`.
 
 If this fails, read the terminal message. Common fixes:
 
 | Error | What to do |
 |--------|------------|
 | Photo path does not exist | Fix typo in `photo:` or rename the file to match. Case-sensitive. |
+| Photo exists locally but is not in Git | `git add public/images/.../your-file.jpg`, then commit |
 | File too large | Re-export smaller from Canva (under 1 MB) |
 | Collection / frontmatter error | Check `---` lines exist; copy fields from template |
 
-17. **Commit and push** to GitHub. Netlify rebuilds automatically; give it a minute, then refresh the live site.
+18. **Commit and push** to GitHub. Netlify rebuilds automatically; give it a minute, then refresh the live site.
 
 ---
 
@@ -246,6 +258,7 @@ _Add dated entries below whenever behavior, env vars, or maintainer workflows ch
 
 | Date | Change |
 |------|--------|
+| 2026-05-22 | `validate-profile-photos`: fail build if a referenced headshot exists on disk but was never `git add`ed; README adds explicit `git add` + `git status` step. |
 | 2026-05-19 | README: expanded [Alumni profiles](#alumni-profiles-and-team-roster) with full team/alumni headshot workflow (Canva, folders, frontmatter, build validation). |
 | 2026-05-19 | Favicon: `Layout.astro` uses `/favicon.ico` only (removed missing `favicon.svg` link). `_redirects`: `/current-season/` → `/meet-the-team` (301) so trailing-slash URLs redirect cleanly on Netlify. |
 | 2026-05-18 | Netlify deploy: [`netlify.toml`](netlify.toml), [`public/_redirects`](public/_redirects) for `/current-season` → `/meet-the-team`. |

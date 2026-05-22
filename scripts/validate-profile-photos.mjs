@@ -2,9 +2,11 @@
  * Build-time guardrails for team + alumni profile images.
  * - Every file under public/images/{team,alumni}/profiles/ must be <= profilePhotoMaxBytes.
  * - Every markdown frontmatter `photo` path must exist on disk.
+ * - In a Git repo, each referenced photo must be tracked (git add) so pushes include the file.
  *
  * Resize manually to square 1:1 (see recommended size in src/constants/profile-media.json).
  */
+import { execSync } from 'node:child_process';
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -31,6 +33,21 @@ const PROFILE_DIRS = [
 ];
 
 const IMAGE_EXT = /\.(jpe?g|png|webp|gif|avif)$/i;
+
+const isGitRepo = existsSync(join(root, '.git'));
+
+/** @param {string} relFromRoot path relative to repo root, e.g. public/images/team/profiles/foo.jpg */
+function isTrackedByGit(relFromRoot) {
+	try {
+		execSync(`git ls-files --error-unmatch -- ${JSON.stringify(relFromRoot)}`, {
+			cwd: root,
+			stdio: 'pipe',
+		});
+		return true;
+	} catch {
+		return false;
+	}
+}
 
 function formatBytes(n) {
 	if (n < 1024) return `${n} B`;
@@ -107,6 +124,14 @@ for (const { label, publicDir, contentDir, pathPrefix } of PROFILE_DIRS) {
 				errors.push(
 					`[${label}] ${name}: ${photo} is ${formatBytes(st.size)} (max ${formatBytes(profilePhotoMaxBytes)}).`,
 				);
+			}
+			if (isGitRepo) {
+				const relGit = relative(root, abs);
+				if (!isTrackedByGit(relGit)) {
+					errors.push(
+						`[${label}] ${name}: photo exists locally but is not in Git (${relGit}). Run: git add ${relGit}`,
+					);
+				}
 			}
 		}
 	}
