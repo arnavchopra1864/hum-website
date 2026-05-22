@@ -7,6 +7,8 @@ interface ImportMetaEnv {
   readonly PUBLIC_PERFORMANCE_REQUEST_FORM_URL?: string;
   /** Interest / recruiting form for prospective members — linked as "Join Us" in the nav and CTAs */
   readonly PUBLIC_JOIN_INTEREST_FORM_URL?: string;
+  /** Canonical site origin for Open Graph URLs (e.g. https://humacappella.netlify.app) */
+  readonly PUBLIC_SITE_URL?: string;
   /** Optional absolute path/URL for the header logo (overrides `public/images/hum-logo-25.png`) */
   readonly PUBLIC_SITE_LOGO_URL?: string;
   /** YouTube video ID for the full-width featured performance video on the home page */

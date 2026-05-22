@@ -258,6 +258,7 @@ _Add dated entries below whenever behavior, env vars, or maintainer workflows ch
 
 | Date | Change |
 |------|--------|
+| 2026-05-22 | Link previews: site-wide Open Graph / Twitter image set to `hum-logo.png` in `Layout.astro`; `site` in `astro.config.mjs` (optional override `PUBLIC_SITE_URL`). |
 | 2026-05-22 | `validate-profile-photos`: fail build if a referenced headshot exists on disk but was never `git add`ed; README adds explicit `git add` + `git status` step. |
 | 2026-05-19 | README: expanded [Alumni profiles](#alumni-profiles-and-team-roster) with full team/alumni headshot workflow (Canva, folders, frontmatter, build validation). |
 | 2026-05-19 | Favicon: `Layout.astro` uses `/favicon.ico` only (removed missing `favicon.svg` link). `_redirects`: `/current-season/` → `/meet-the-team` (301) so trailing-slash URLs redirect cleanly on Netlify. |

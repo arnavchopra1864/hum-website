@@ -65,6 +65,14 @@ const humEmail = envSupportEmail || DEFAULT_HUM_EMAIL;
 
 const pathname = Astro.url.pathname;
 
+/** Link previews (iMessage, etc.) — always hum-logo, never roster headshots. */
+const siteOrigin =
+	(typeof import.meta.env.PUBLIC_SITE_URL === 'string' && import.meta.env.PUBLIC_SITE_URL.trim()) ||
+	Astro.site?.href ||
+	Astro.url.origin;
+const ogImageUrl = new URL(DEFAULT_LOGO_PUBLIC_PATH, siteOrigin).href;
+const canonicalUrl = new URL(pathname, siteOrigin).href;
+
 function navLinkClass(href: string): string {
 	const base =
 		'rounded-md px-3 py-2 text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hum-green';
@@ -87,6 +95,17 @@ function navLinkClass(href: string): string {
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
 		<meta name="description" content={description} />
+		<link rel="canonical" href={canonicalUrl} />
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content="Hum A Cappella" />
+		<meta property="og:url" content={canonicalUrl} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={ogImageUrl} />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImageUrl} />
 		<title>{title}</title>
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
