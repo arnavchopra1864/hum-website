@@ -4,19 +4,7 @@ import Layout from '../layouts/Layout.astro';
 import AlumniProfileCard from '../components/alumni/AlumniProfileCard.astro';
 import AlumniInteractionSection from '../components/alumni/AlumniInteractionSection.astro';
 import PageHero from '../components/PageHero.astro';
-import {
-	ALUMNI_PROFILE_PHOTO_MAX_LABEL,
-	ALUMNI_PROFILE_PHOTO_PREFIX,
-} from '../constants/alumni';
 import { DEFAULT_ALUMNI_FORM_URL } from '../constants/alumni-form';
-import {
-	REUNION_ANCHOR_ID,
-	REUNION_EVENTBRITE_TICKETS_URL,
-	REUNION_SECTION_HEADING,
-	REUNION_SECTION_EYEBROW,
-	REUNION_SECTION_PARAGRAPHS,
-	REUNION_TICKET_CTA_LABEL,
-} from '../constants/reunion';
 
 const envFormUrl = (typeof import.meta.env.PUBLIC_ALUMNI_FORM_URL === 'string' && import.meta.env.PUBLIC_ALUMNI_FORM_URL.trim()) || '';
 const formUrl = envFormUrl || DEFAULT_ALUMNI_FORM_URL;
@@ -25,8 +13,6 @@ const allAlumni = await getCollection('alumni');
 const visible = allAlumni
 	.filter((e) => !e.data.draft)
 	.sort((a, b) => {
-		// const s = a.data.sortOrder - b.data.sortOrder;
-		// if (s !== 0) return s;
 		return a.data.name.localeCompare(b.data.name);
 	});
 const featured = visible.filter((e) => e.data.featured);
@@ -70,33 +56,6 @@ const ALUMNI_HERO_INTRO = 'Reconnect with Hum, find alumni near you, and stay in
 		intro={ALUMNI_HERO_INTRO}
 	/>
 
-	<section
-		id={REUNION_ANCHOR_ID}
-		class="scroll-mt-28 border-b border-black/10"
-		aria-labelledby="alumni-reunion-heading"
-	>
-		<div class="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
-			<p class="text-sm font-semibold uppercase tracking-widest text-hum-green">{REUNION_SECTION_EYEBROW}</p>
-			<h2 id="alumni-reunion-heading" class="mt-2 font-heading text-2xl font-bold text-hum-black sm:text-3xl">
-				{REUNION_SECTION_HEADING}
-			</h2>
-			<div class="mt-4 max-w-3xl space-y-4 text-sm leading-relaxed text-black/80 sm:text-base">
-				{REUNION_SECTION_PARAGRAPHS.map((paragraph) => (
-					<p>{paragraph}</p>
-				))}
-			</div>
-			<div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-				<a
-					href={REUNION_EVENTBRITE_TICKETS_URL}
-					target="_blank"
-					rel="noopener noreferrer"
-					class="inline-flex min-h-[48px] items-center justify-center rounded-md bg-hum-green px-6 py-3 text-center text-sm font-semibold text-hum-black shadow-sm transition-colors hover:bg-hum-green-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hum-green"
-				>
-					{REUNION_TICKET_CTA_LABEL}
-				</a>
-			</div>
-		</div>
-	</section>
 
 	<section class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8" aria-labelledby="alumni-directory-heading">
 		<div class="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">

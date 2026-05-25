@@ -5,7 +5,6 @@ import HomeHypeVideo from '../components/home/HomeHypeVideo.astro';
 import HomePrimaryCtas from '../components/home/HomePrimaryCtas.astro';
 import HomeWatchUs from '../components/home/HomeWatchUs.astro';
 import HomeLatestHighlights from '../components/home/HomeLatestHighlights.astro';
-import ReunionSiteBand from '../components/ReunionSiteBand.astro';
 import { DEFAULT_PERFORMANCE_REQUEST_FORM_URL } from '../constants/performance';
 import { DEFAULT_JOIN_INTEREST_FORM_URL } from '../constants/recruiting';
 import { DEFAULT_INSTAGRAM_URL } from '../constants/social';
@@ -29,8 +28,6 @@ const instagramUrl =
 ---
 
 <Layout title="Hum A Cappella | Home">
-{/* REMOVE THIS AFTER ALUMNI MEET */}
-	<ReunionSiteBand />
 	<HomeHero />
 	<HomePrimaryCtas
 		performanceRequestFormUrl={performanceRequestFormUrl}
