@@ -1,6 +1,6 @@
 ---
 name: Shreyas Gupta
-voicePart: Tenor
+voicePart: Beatboxer
 draft: false
 photo: /images/team/profiles/shreyas-gupta.jpg
 ---
